@@ -1,3 +1,79 @@
+# --- Game and Graphics Optimizations ---
+# Disables Xbox Game DVR and Game Bar to improve gaming performance
+Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Value 0
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameConfigStore" -Name "AllowGameDVR" -Value 0
+# Disables controller access to Game Bar for less interruptions
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Value 0
+# Disable Game Mode
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -Value 0
+# Sets DirectX user global settings for VRR.relevant.have.VRR-capable.monitor
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\DirectX\UserGpuPreferences" -Name "DirectXUserGlobalSettings" -Value "SwapEffectUpgradeEnable=1;VRROptimizeEnable=0;"
+
+# --- System Responsiveness and Prioritization ---
+# Sets system responsiveness to 10% reserved for background tasks
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "SystemResponsiveness" -Value 10
+# Disables network throttling for optimal gaming performance
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "NetworkThrottlingIndex" -Value 10
+# Sets GPU priority to high for games
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Name "GPU Priority" -Value 8
+# Sets CPU priority to high for games
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Name "Priority" -Value 6
+# Sets scheduling category to high for games
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Name "Scheduling Category" -Value "High"
+# Enables hardware-accelerated GPU scheduling
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "HwSchMode" -Value 2
+# Sets Win32 priority separation for best performance of programs
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" -Name "Win32PrioritySeparation" -Value 38
+
+# --- Storage and Background Services ---
+# Disables Storage Sense to avoid background disk activity
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\StorageSense" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\StorageSense" -Name "AllowStorageSenseGlobal" -Value 0
+# Reduces services timeout for better performance
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "ServicesPipeTimeout" -Value 30000
+# Disables fast startup feature
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name "HiberbootEnabled" -Value 0
+# Disables Windows prefetch for performance tuning
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" -Name "EnablePrefetcher" -Value 0
+# Disables Superfetch/SysMain service
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" -Name "EnableSuperfetch" -Value 0
+
+# --- UI and Visual Effects ---
+# Disables UI animations for improved performance
+Set-ItemProperty -Path "HKCU:\Control Panel\Desktop\WindowMetrics" -Name "MinAnimate" -Value 0
+# Disables desktop composition effects for performance
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\DWM" -Name "CompositionPolicy" -Value 0
+# Sets visual effects for best performance
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
+# Disables taskbar animations
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAnimations" -Value 0
+# Disables menu animations for faster UI and instant menu display
+Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "MenuShowDelay" -Value 0
+
+# --- File Explorer and Search ---
+# Limits search to indexed locations for performance
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Search\Preferences" -Name "WholeFileSystem" -Value 0
+# Disables startup delay for applications
+New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" -Force | Out-Null
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" -Name "StartupDelayInMSec" -Value 0
+
+# --- Mouse and Pointer Precision ---
+# Default -Value 1 enhanced pointer precision (for gaming and precision tasks -Value 0)
+Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSpeed" -Value 1
+# Default -Value 6 mouse acceleration threshold 1 (for gaming and precision tasks -Value 0)
+Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold1" -Value 6
+# Default -Value 10 mouse acceleration threshold 2 (for gaming and precision tasks -Value 0)
+Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold2" -Value 10
+# Default -Value 10 Sets mouse sensitivity
+Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSensitivity" -Value 10
+
+# --- Background Apps and Assistance ---
+# Disables background apps for better performance
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsRunInBackground" -Value 0
+# Disables remote assistance feature
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name "fAllowToGetHelp" -Value 0
+
 # Get the active power plan GUID and store it in a variable
 $active_guid = (powercfg /getactivescheme | Select-String -Pattern 'GUID' | ForEach-Object { $_.ToString().Split()[3] }) 
 # Gets the current power plan's GUID
