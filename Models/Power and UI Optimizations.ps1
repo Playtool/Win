@@ -1,4 +1,4 @@
-# --- Game and Graphics Optimizations ---
+#Optimizations
 # Disables Xbox Game DVR and Game Bar to improve gaming performance
 Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Value 0
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameConfigStore" -Name "AllowGameDVR" -Value 0
