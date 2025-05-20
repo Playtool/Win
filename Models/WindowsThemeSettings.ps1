@@ -1,173 +1,21 @@
-WindowsThemeSettings
-{
-// Registry paths and keys
-public static class Registry
-{
-public const string ThemesPersonalizeSubKey = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-public const string AppsUseLightThemeName = "AppsUseLightTheme";
-public const string SystemUsesLightThemeName = "SystemUsesLightTheme";
-}
-    // Wallpaper paths
-    public static class Wallpaper
-    {
-        // Windows 11 wallpaper paths
-        public const string Windows11BasePath = @"C:\Windows\Web\Wallpaper\Windows";
-        public const string Windows11LightWallpaper = "img0.jpg";
-        public const string Windows11DarkWallpaper = "img19.jpg";
+# --- Windows Theme Settings for Windows 11 Pro ---
 
-        // Windows 10 wallpaper path
-        public const string Windows10Wallpaper = @"C:\Windows\Web\4K\Wallpaper\Windows\img0_3840x2160.jpg";
+# 1. Set Windows Apps to Dark Mode (0 = dark, 1 = light)
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Value 0 -Type DWord
 
-        public static string GetDefaultWallpaperPath(bool isWindows11, bool isDarkMode)
-        {
-            if (isWindows11)
-            {
-                return System.IO.Path.Combine(
-                    Windows11BasePath, 
-                    isDarkMode ? Windows11DarkWallpaper : Windows11LightWallpaper);
-            }
-            
-            return Windows10Wallpaper;
-        }
-    }
+# 2. Set Windows System to Dark Mode (0 = dark, 1 = light)
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 0 -Type DWord
 
-    private readonly IThemeService _themeService;
-    private bool _isDarkMode;
-    private bool _changeWallpaper;
+# To set Light Mode instead, change the value to 1 for both keys above.
 
-    /// <summary>
-    /// Gets or sets a value indicating whether dark mode is enabled.
-    /// </summary>
-    public bool IsDarkMode
-    {
-        get => _isDarkMode;
-        set => _isDarkMode = value;
-    }
+# 3. (Optional) Set the default wallpaper for Windows 11 Dark Mode
+# This sets the wallpaper to the default Windows 11 dark image.
+$wallpaperPath = "C:\Windows\Web\Wallpaper\Windows\img19.jpg"
+RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
+Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "Wallpaper" -Value $wallpaperPath
 
-    /// <summary>
-    /// Gets or sets a value indicating whether to change the wallpaper when changing the theme.
-    /// </summary>
-    public bool ChangeWallpaper
-    {
-        get => _changeWallpaper;
-        set => _changeWallpaper = value;
-    }
+# 4. (Optional) Refresh the desktop to apply wallpaper change
+Add-Type '[DllImport("user32.dll")]public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);' -Name NativeMethods -Namespace Win32
+[Win32.NativeMethods]::SystemParametersInfo(20, 0, $wallpaperPath, 3)
 
-    /// <summary>
-    /// Gets the current theme name.
-    /// </summary>
-    public string ThemeName => IsDarkMode ? "Dark Mode" : "Light Mode";
-
-    /// <summary>
-    /// Gets the available theme options.
-    /// </summary>
-    public List<string> ThemeOptions { get; } = new List<string> { "Light Mode", "Dark Mode" };
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WindowsThemeSettings"/> class.
-    /// </summary>
-    public WindowsThemeSettings()
-    {
-        // Default constructor for serialization
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WindowsThemeSettings"/> class.
-    /// </summary>
-    /// <param name="themeService">The theme service.</param>
-    public WindowsThemeSettings(IThemeService themeService)
-    {
-        _themeService = themeService;
-        _isDarkMode = themeService?.IsDarkModeEnabled() ?? false;
-    }
-
-    /// <summary>
-    /// Loads the current theme settings from the system.
-    /// </summary>
-    public void LoadCurrentSettings()
-    {
-        if (_themeService != null)
-        {
-            _isDarkMode = _themeService.IsDarkModeEnabled();
-        }
-    }
-
-    /// <summary>
-    /// Applies the current theme settings to the system.
-    /// </summary>
-    /// <returns>True if the operation succeeded; otherwise, false.</returns>
-    public bool ApplyTheme()
-    {
-        return _themeService?.SetThemeMode(_isDarkMode) ?? false;
-    }
-
-    /// <summary>
-    /// Applies the current theme settings to the system asynchronously.
-    /// </summary>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task<bool> ApplyThemeAsync()
-    {
-        if (_themeService == null)
-            return false;
-
-        return await _themeService.ApplyThemeAsync(_isDarkMode, _changeWallpaper);
-    }
-
-    /// <summary>
-    /// Creates registry settings for Windows theme.
-    /// </summary>
-    /// <returns>A list of registry settings.</returns>
-    public static List<RegistrySetting> CreateRegistrySettings()
-    {
-        return new List<RegistrySetting>
-        {
-            new RegistrySetting
-            {
-                Category = "WindowsTheme",
-                Hive = RegistryHive.CurrentUser,
-                SubKey = Registry.ThemesPersonalizeSubKey,
-                Name = Registry.AppsUseLightThemeName,
-                EnabledValue = 0, // Dark mode
-                DisabledValue = 1, // Light mode
-                ValueType = RegistryValueKind.DWord,
-                Description = "Windows Apps Theme Mode",
-                // For backward compatibility
-                RecommendedValue = 0,
-                DefaultValue = 1
-            },
-            new RegistrySetting
-            {
-                Category = "WindowsTheme",
-                Hive = RegistryHive.CurrentUser,
-                SubKey = Registry.ThemesPersonalizeSubKey,
-                Name = Registry.SystemUsesLightThemeName,
-                EnabledValue = 0, // Dark mode
-                DisabledValue = 1, // Light mode
-                ValueType = RegistryValueKind.DWord,
-                Description = "Windows System Theme Mode",
-                // For backward compatibility
-                RecommendedValue = 0,
-                DefaultValue = 1
-            }
-        };
-    }
-
-    /// <summary>
-    /// Creates a customization setting for Windows theme.
-    /// </summary>
-    /// <returns>A customization setting.</returns>
-    public static CustomizationSetting CreateCustomizationSetting()
-    {
-        var setting = new CustomizationSetting
-        {
-            Id = "WindowsTheme",
-            Name = "Windows Theme",
-            Description = "Toggle between light and dark theme for Windows",
-            GroupName = "Windows Theme",
-            Category = CustomizationCategory.Theme,
-            ControlType = ControlType.ComboBox,
-            RegistrySettings = CreateRegistrySettings()
-        };
-
-        return setting;
-    }
+# --- End of Windows Theme Settings ---
