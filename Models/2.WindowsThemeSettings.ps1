@@ -1,21 +1,11 @@
-# --- Windows Theme Settings for Windows 11 Pro ---
-
-# 1. Set Windows Apps to Dark Mode (0 = dark, 1 = light)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Value 0 -Type DWord
-
-# 2. Set Windows System to Dark Mode (0 = dark, 1 = light)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 0 -Type DWord
-
-# To set Light Mode instead, change the value to 1 for both keys above.
-
-# 3. (Optional) Set the default wallpaper for Windows 11 Dark Mode
-# This sets the wallpaper to the default Windows 11 dark image.
-$wallpaperPath = "C:\Windows\Web\Wallpaper\Windows\img19.jpg"
+# 1. Set Windows Apps to  Mode (0 = dark, 1 = light)
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Value 1 -Type DWord
+# 2. Set Windows System to  Mode (0 = dark, 1 = light)
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 1 -Type DWord
+# 3. This sets the wallpaper image.
+$wallpaperPath = "C:\Windows\Web\Wallpaper\Windows\img0.jpg"
 RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
 Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "Wallpaper" -Value $wallpaperPath
-
 # 4. (Optional) Refresh the desktop to apply wallpaper change
 Add-Type '[DllImport("user32.dll")]public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);' -Name NativeMethods -Namespace Win32
 [Win32.NativeMethods]::SystemParametersInfo(20, 0, $wallpaperPath, 3)
-
-# --- End of Windows Theme Settings ---
