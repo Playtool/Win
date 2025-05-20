@@ -35,54 +35,43 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer
 # Font Smoothing (2 = enabled, 0 = disabled)
 Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "FontSmoothing" -Value "2" -Type String
 
-# DPI Scaling (LogPixels: 96 = 100%, 120 = 125%)
-Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "LogPixels" -Value 96 -Type DWord
-###
-# Per-Process DPI (1 = enabled, 0 = disabled)
-Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "EnablePerProcessSystemDPI" -Value 1 -Type DWord
-
 # Gallery in Navigation Pane (remove to hide)
 Remove-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}" -ErrorAction SilentlyContinue
-
-# Classic Context Menu (delete value for classic, set empty for modern)
-Remove-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "" -ErrorAction SilentlyContinue
-
-# --- Optimizations ---
-
 # Long Paths Enabled (1 = enabled, 0 = disabled)
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -Type DWord
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 0 -Type DWord
 
-# Block AAD Workplace Join (1 = block, 0 = allow)
-Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "BlockAADWorkplaceJoin" -Value 1 -Type DWord
+# Remove Quick Access "Home" section from the navigation pane
+Remove-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}" -ErrorAction SilentlyContinue
+#New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}" -Force
 
-# Sync Provider Notifications (1 = show, 0 = hide)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSyncProviderNotifications" -Value 1 -Type DWord
-
-# Tablet Mode (1 = enabled, 0 = disabled)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ImmersiveShell" -Name "TabletMode" -Value 1 -Type DWord
-
-# Desktop Mode on Sign-in (1 = desktop, 0 = default)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ImmersiveShell" -Name "SignInMode" -Value 1 -Type DWord
-
-# Voice Typing Button (1 = enabled, 0 = disabled)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputSettings" -Name "IsVoiceTypingKeyEnabled" -Value 1 -Type DWord
-
-# Typing Insights (1 = enabled, 0 = disabled)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputSettings" -Name "InsightsEnabled" -Value 1 -Type DWord
-
-# Clipboard Suggested Actions (0 = enabled, 1 = disabled)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\SmartActionPlatform\SmartClipboard" -Name "Disabled" -Value 0 -Type DWord
-
-# Default Printer Management (0 = Windows manages, 1 = user manages)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Windows" -Name "LegacyDefaultPrinterMode" -Value 0 -Type DWord
-
-# Snap Assist (1 = enabled, 0 = disabled)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "SnapAssist" -Value 1 -Type DWord
+# Recently viewed files in Quick Access (1 = show, 0 = hide)
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -Value 0 -Type DWord
 
 # Frequent Folders in Quick Access (1 = show, 0 = hide)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -Value 1 -Type DWord
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -Value 0 -Type DWord
 
 # Office Files in Quick Access (1 = show, 0 = hide)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowCloudFilesInQuickAccess" -Value 1 -Type DWord
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowCloudFilesInQuickAccess" -Value 0 -Type DWord
+# Gallery in Navigation Pane (remove to hide)
+Remove-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}" -ErrorAction SilentlyContinue
+# Gallery in Navigation Pane (Add to show)
+#New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}" -Force
 
-# --- End of script ---
+
+#check for desktop
+# Tablet Mode (1 = enabled, 0 = disabled)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ImmersiveShell" -Name "TabletMode" -Value 0 -Type DWord
+# Desktop Mode on Sign-in (1 = desktop, 0 = default)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ImmersiveShell" -Name "SignInMode" -Value 1 -Type DWord
+# Voice Typing Button (1 = enabled, 0 = disabled)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputSettings" -Name "IsVoiceTypingKeyEnabled" -Value 1 -Type DWord
+# Typing Insights (1 = enabled, 0 = disabled)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputSettings" -Name "InsightsEnabled" -Value 1 -Type DWord
+# Clipboard Suggested Actions (0 = enabled, 1 = disabled)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\SmartActionPlatform\SmartClipboard" -Name "Disabled" -Value 0 -Type DWord
+# Default Printer Management (0 = Windows manages, 1 = user manages)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Windows" -Name "LegacyDefaultPrinterMode" -Value 0 -Type DWord
+# Snap Assist (1 = enabled, 0 = disabled)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "SnapAssist" -Value 1 -Type DWord
+# Sync Provider Notifications (1 = show, 0 = hide)
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSyncProviderNotifications" -Value 1 -Type DWord
