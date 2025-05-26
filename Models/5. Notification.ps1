@@ -1,4 +1,8 @@
-# --- Notification Optimizations ---
+# --- System >> Notification Optimizations ---
+
+# 1. System>>Notification on/off
+Set-ItemProperty -Path "HKCU:\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "ToastEnabled" -Value 0 -Type DWord
+
 # 2. Disable notification sounds
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_NOTIFICATION_SOUND" -Value 0 -Type DWord
 

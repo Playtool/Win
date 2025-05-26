@@ -1,15 +1,12 @@
 # --- Privacy Optimizations for Windows 11 Pro ---((registry keys deleted after system restart))
 
-### 1. Disable ::Privacy&Security>>activity history
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -Value 0 -Type DWord
-
-# 2. Personalized Ads(0 = disable, 1 = enable) :: Privacy&Security>>General>>Let apps show me personalized ads by using my advertising ID
+# 2. Privacy&Security>>General>>Let apps show me personalized ads by using my advertising ID (0 = disable, 1 = enable)
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Value 0 -Type DWord
 
-# 3. Prevent websites from Lang #Privacy&Security>>General>>Let websites accessing your language list (1 = disable, 0 = enable)
+# 3. Privacy&Security>>General>>Let websites accessing your language list (1 = disable, 0 = enable)
 Set-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Value 1 -Type DWord
 
-# 4. Disable App Launch Tracking (prevents Windows from tracking app launches)(0 = disable, 1 = enable)
+# 4. Windows tracking app launches)(0 = disable, 1 = enable)
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackProgs" -Value 0 -Type DWord
 
 # 5. Privacy&Security>>General>> Suggested Content in Settings app (0 = disable, 1 = enable)
@@ -27,12 +24,13 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SilentInstalledAppsEnabled" -Type "DWord" -Value 0
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SystemPaneSuggestionsEnabled" -Type "DWord" -Value 0
 
-# 7. Disable Online Speech Recognition and Input Personalization
+# 7. Privacy&Security>>Speech. Online Speech Recognition (0 = disable, 1 = enable)
+if (-not (Test-Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy")) {New-Item -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings" -Name "OnlineSpeechPrivacy" | Out-Null}
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" -Name "HasAccepted" -Value 0 -Type DWord
+if (-not (Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\InputPersonalization")) {New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft" -Name "InputPersonalization" | Out-Null}
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\InputPersonalization" -Name "AllowInputPersonalization" -Value 0 -Type DWord
 
-# 8. Disable Custom Inking and Typing Dictionary
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CPSS\Store\InkingAndTypingPersonalization" -Name "Value" -Value 0 -Type DWord
+###### 8. Disable Custom Inking and Typing Dictionary
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Value 0 -Type DWord
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitTextCollection" -Value 1 -Type DWord
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Value 0 -Type DWord
