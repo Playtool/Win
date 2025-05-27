@@ -1,4 +1,8 @@
 # --- Start Menu Customizations and Optimizations for Windows 11 Pro ---
+# 19. Disable Web Search in Start Menu and Taskbar
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "BingSearchEnabled" -Value 0 -Type DWord
+#above works for Windows 11 Pro
+
 
 # 1. Show Recently Added Apps in Start Menu (0 = show, 1 = hide)
 # Applies to both current user and all users (local machine)
